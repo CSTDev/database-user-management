@@ -5,6 +5,7 @@ import {
   render,
   screen,
   waitForElementToBeRemoved,
+  within,
 } from "@testing-library/react";
 import { User } from "../../data/models";
 import { getAllUsers, createUser, updateUser } from "../../data/userAPI";
@@ -34,11 +35,13 @@ beforeEach(() => {
       user.roles = [];
     }
     apiUsers.push(user);
+    return apiUsers;
   });
 
   updateUserMock.mockImplementation(async (user: User) => {
     const index = apiUsers.findIndex((u: User) => u.userId === user.userId);
     apiUsers[index] = user;
+    return apiUsers;
   });
 });
 
@@ -139,11 +142,38 @@ describe("Home page", () => {
     fireEvent.change(screen.getByLabelText("Username"), {
       target: { value: "Billy" },
     });
+
     fireEvent.click(screen.getByText(/SUBMIT/i));
 
     await waitForElementToBeRemoved(createUserPopover);
 
     const newUserName = screen.getByText(/Billy/i);
     expect(newUserName).toBeInTheDocument();
+  });
+
+  it("can remove roles from a user", async () => {
+    render(<Home />);
+
+    const loadingSpinner = screen.getByRole("progressbar", {
+      name: /loading/i,
+    });
+    await waitForElementToBeRemoved(loadingSpinner);
+
+    const editUserButtons = screen.getAllByRole("button", { name: /edit/i });
+    expect(editUserButtons.length).toBe(2);
+    fireEvent.click(editUserButtons[0]);
+
+    const createUserPopover = await screen.findByText(/Edit User/i);
+    expect(createUserPopover).toBeInTheDocument();
+
+    const adminRoles = screen.getAllByRole("button", { name: /admin/i });
+    const roleToDelete = within(adminRoles[0]).getByLabelText("delete role");
+    fireEvent.click(roleToDelete);
+    fireEvent.click(screen.getByText(/SUBMIT/i));
+
+    await waitForElementToBeRemoved(createUserPopover);
+
+    const adminRoleChip = screen.queryByText(/admin/i);
+    expect(adminRoleChip).toBeNull();
   });
 });

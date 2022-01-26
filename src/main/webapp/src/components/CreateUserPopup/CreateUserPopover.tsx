@@ -2,11 +2,11 @@ import { makeStyles, Typography } from "@material-ui/core";
 import Popover from "@material-ui/core/Popover";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import CancelIcon from "@material-ui/icons/Cancel";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import React, { FormEvent, useEffect, useState } from "react";
 import { User, Role } from "../../data/models";
-import Roles from "../../pages/Roles";
 
 interface CreateUserPopoverProps {
   open: boolean;
@@ -83,6 +83,9 @@ const CreateUserPopover: React.FC<CreateUserPopoverProps> = (
           renderInput={(params) => (
             <TextField {...params} label="Role" error={errors?.roles} />
           )}
+          ChipProps={{
+            deleteIcon: <CancelIcon aria-label={"delete role"} />,
+          }}
         />
       </div>
     );
@@ -120,7 +123,7 @@ const CreateUserPopover: React.FC<CreateUserPopoverProps> = (
     <Popover
       open={props.open}
       anchorReference={"none"}
-      onClose={handleClose}
+      onClose={() => handleClose(false)}
       className={classes.root}
     >
       <Box m={1}>

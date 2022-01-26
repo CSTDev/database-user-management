@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexDirection: "column",
       flexGrow: 1,
-      margin: "128px",
       padding: "8px",
+      marginTop: "1em",
     },
     table: {},
   })
@@ -83,13 +83,12 @@ const UserTable: React.FC<UserTableProps> = (props: UserTableProps) => {
               <TableCell>{user.userId}</TableCell>
               <TableCell></TableCell>
               <TableCell>
-                {user.roles
-                  .sort()
-                  .slice(0, roleOverflowLimit)
-                  .map((r, i) => (
-                    <Chip key={i} label={r} />
-                  ))}
-                {user.roles.length > roleOverflowLimit && (
+                {user.roles &&
+                  user.roles
+                    .sort()
+                    .slice(0, roleOverflowLimit)
+                    .map((r, i) => <Chip key={i} label={r} />)}
+                {user.roles && user.roles.length > roleOverflowLimit && (
                   <Chip
                     label={
                       "+" + (user.roles.length - roleOverflowLimit) + "..."

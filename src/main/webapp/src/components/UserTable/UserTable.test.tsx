@@ -42,6 +42,7 @@ describe("User table", () => {
       if (u.roles.length - rolesCount > 0) {
         const overflowText = "+" + (u.roles.length - rolesCount) + "...";
         const overflowRole = screen.getByText(overflowText);
+        // eslint-disable-next-line jest/no-conditional-expect
         expect(overflowRole).toBeInTheDocument();
       }
     });
