@@ -5,7 +5,7 @@ export interface User {
 }
 
 export interface Role {
-  name: string;
+  roleId: string;
   shortName: string;
   description: string;
 }

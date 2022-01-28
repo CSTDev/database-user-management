@@ -44,7 +44,6 @@ const CreateUserPopover: React.FC<CreateUserPopoverProps> = (
   }
 
   useEffect(() => {
-    //TODO the user is updated even just clicking out of the dialog :/
     setUser(props.user ? Object.assign({}, props.user) : ({} as User));
     setNewUser(props.user ? false : true);
   }, [props]);

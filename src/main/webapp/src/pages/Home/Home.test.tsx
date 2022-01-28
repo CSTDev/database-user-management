@@ -8,7 +8,12 @@ import {
   within,
 } from "@testing-library/react";
 import { User } from "../../data/models";
-import { getAllUsers, createUser, updateUser } from "../../data/userAPI";
+import {
+  getAllUsers,
+  createUser,
+  updateUser,
+  deleteUser,
+} from "../../data/userAPI";
 
 const users: Array<User> = [
   {
@@ -23,6 +28,7 @@ jest.mock("../../data/userAPI");
 const getAllUsersMock = getAllUsers as jest.MockedFunction<typeof getAllUsers>;
 const createUserMock = createUser as jest.MockedFunction<typeof createUser>;
 const updateUserMock = updateUser as jest.MockedFunction<typeof updateUser>;
+const deleteUserMock = deleteUser as jest.MockedFunction<typeof deleteUser>;
 
 beforeEach(() => {
   const apiUsers = Object.assign([] as Array<User>, users);
@@ -42,6 +48,10 @@ beforeEach(() => {
     const index = apiUsers.findIndex((u: User) => u.userId === user.userId);
     apiUsers[index] = user;
     return apiUsers;
+  });
+
+  deleteUserMock.mockImplementation(async (userId: string) => {
+    return apiUsers.filter((u) => u.userId !== userId);
   });
 });
 
@@ -81,6 +91,15 @@ describe("Home page", () => {
     const deleteButtons = screen.getAllByRole("button", { name: /delete/i });
     expect(deleteButtons.length).toBe(2);
     fireEvent.click(deleteButtons[0]);
+
+    // Confirm
+    const confirmButton = await screen.findByRole("button", {
+      name: /confirm delete/i,
+    });
+    expect(confirmButton).toBeInTheDocument();
+    fireEvent.click(confirmButton);
+
+    // Assert
     expect(username).not.toBeInTheDocument();
   });
 

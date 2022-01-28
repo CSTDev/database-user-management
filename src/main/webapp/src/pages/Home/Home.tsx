@@ -7,7 +7,6 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
   Fab,
   makeStyles,
   Theme,
@@ -138,7 +137,11 @@ const Home: React.FC = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={closeDeleteConfirmation} color="primary">
+          <Button
+            onClick={closeDeleteConfirmation}
+            color="primary"
+            aria-label="cancel delete"
+          >
             Cancel
           </Button>
           <Button
@@ -148,6 +151,7 @@ const Home: React.FC = () => {
                 : closeDeleteConfirmation()
             }
             color="primary"
+            aria-label="confirm delete"
           >
             Delete
           </Button>
