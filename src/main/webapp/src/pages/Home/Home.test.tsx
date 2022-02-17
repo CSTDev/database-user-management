@@ -114,8 +114,8 @@ describe("Home page", () => {
     const addFab = screen.getByRole("button", { name: /createUser/i });
     fireEvent.click(addFab);
 
-    const createUserPopover = await screen.findByText(/Create User/i);
-    expect(createUserPopover).toBeInTheDocument();
+    const createUserPopoverTitle = await screen.findByText(/Create User/i);
+    expect(createUserPopoverTitle).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("User Account"), {
       target: { value: "L123456" },
     });
@@ -133,7 +133,7 @@ describe("Home page", () => {
 
     fireEvent.click(screen.getByText(/SUBMIT/i));
 
-    await waitForElementToBeRemoved(createUserPopover);
+    await waitForElementToBeRemoved(createUserPopoverTitle);
 
     const newUserName = screen.getByText(/Mark/i);
     expect(newUserName).toBeInTheDocument();

@@ -10,6 +10,7 @@ describe("Role table", () => {
       shortName: "writer",
       description:
         "Allows user to perform write operations in the test database",
+      privileges: [],
     },
   ];
 

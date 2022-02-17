@@ -160,6 +160,11 @@ const Home: React.FC = () => {
     );
   };
 
+  // TODO:
+  //   - add tests for the search filter
+  //   - add validation tests to the create/edit user form
+  //   - add CRUD tests for Roles page (and implement bits to make them work)
+
   return (
     <div className={classes.root}>
       <div className={classes.userContainer}>

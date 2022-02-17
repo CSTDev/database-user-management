@@ -66,6 +66,7 @@ const RoleTable: React.FC<RoleTableProps> = (props: RoleTableProps) => {
           {roles.map((role) => (
             <TableRow key={role.roleId}>
               <TableCell>{role.shortName}</TableCell>
+              <TableCell></TableCell>
               <TableCell>{role.description}</TableCell>
               <TableCell align="right">
                 <IconButton
