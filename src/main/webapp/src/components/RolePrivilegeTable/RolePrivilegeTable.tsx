@@ -15,7 +15,7 @@ import { getAvailableActions } from "../../data/roleAPI";
 import Button from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
-import DeleteIcon from "@material-ui/icons/Delete";
+import DeleteIcon from "@material-ui/icons/DeleteOutlined";
 
 interface RolePrivilegeTableProps {
   privileges: Array<Privilege>;
@@ -62,7 +62,7 @@ const RolePrivilegeTable: React.FC<RolePrivilegeTableProps> = (
         ChipProps={{
           deleteIcon: <CancelIcon aria-label={"delete role"} />,
         }}
-        defaultValue={actions ?? []}
+        value={actions ?? []}
         renderInput={(params) => <TextField {...params} />}
         onChange={(e, newValue) => addAction(props.rowId, newValue)}
         onBlur={() => {
@@ -178,6 +178,7 @@ const RolePrivilegeTable: React.FC<RolePrivilegeTableProps> = (
   return (
     <DataGrid
       editMode="row"
+      autoHeight
       columns={columns}
       rows={privileges}
       components={{

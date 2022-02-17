@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import RolePrivilegeTable from "../RolePrivilegeTable/RolePrivilegeTable";
+import Slide from "@material-ui/core/Slide";
 
 interface CreateRolePopoverProps {
   open: boolean;
@@ -79,6 +80,7 @@ const CreateRolePopover: React.FC<CreateRolePopoverProps> = (
       PaperProps={{
         style: { width: "50%" },
       }}
+      TransitionComponent={Slide}
     >
       <Box m={1}>
         <Typography variant="h6">
@@ -114,7 +116,7 @@ const CreateRolePopover: React.FC<CreateRolePopoverProps> = (
         <Box m={1} className={classes.privilegeContainer}>
           <Typography variant="subtitle1">Privileges</Typography>
           <RolePrivilegeTable
-            privileges={role.privileges}
+            privileges={role.privileges ?? []}
             updatePrivileges={updatePrivileges}
           />
         </Box>
