@@ -4,7 +4,12 @@ import com.mongodb.assertions.Assertions;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import uk.co.cstdev.databasemanagement.exceptions.CreateException;
+import uk.co.cstdev.databasemanagement.model.MongoRole;
+import uk.co.cstdev.databasemanagement.model.MongoUser;
 import uk.co.cstdev.databasemanagement.model.User;
+import uk.co.cstdev.databasemanagement.repository.Mongo;
+import uk.co.cstdev.databasemanagement.repository.RoleRepository;
 import uk.co.cstdev.databasemanagement.repository.UserRepository;
 import uk.co.cstdev.databasemanagement.service.UserService;
 
@@ -15,8 +20,10 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 @QuarkusTest
 public class UserResourceTest {
@@ -25,15 +32,19 @@ public class UserResourceTest {
     UserRepository<User, String> userRepository;
 
     @Inject
+    UserRepository<MongoUser, String> mongoUserRepository;
+
+    @Inject
     UserService userService;
 
     @BeforeEach
     public void setup(){
         userRepository.deleteAll();
+        mongoUserRepository.deleteAll();
     }
 
     @Test
-    public void testGetAllUsersEndpoint() {
+    public void testGetAllUsersEndpoint() throws CreateException {
         User user = new User("ABC123", "ABC123");
         userService.createUser(user);
 
@@ -60,10 +71,14 @@ public class UserResourceTest {
 
         User foundUser = userRepository.findById(user.userId);
         Assertions.assertNotNull(foundUser);
+
+        MongoUser mongoUser = mongoUserRepository.findById(user.userId);
+        Assertions.assertNotNull(mongoUser);
+
     }
 
     @Test
-    public void testUsersCanBeUpdated(){
+    public void testUsersCanBeUpdated() throws CreateException {
         User user = new User("ABC123", "ABC123");
         userService.createUser(user);
         User updateUser = new User("ABC123","BCD234");
@@ -78,10 +93,14 @@ public class UserResourceTest {
         User foundUser = userRepository.findById(user.userId);
         Assertions.assertNotNull(foundUser);
         assertThat(foundUser.username, equalTo(updateUser.username));
+
+        MongoUser mongoUser = mongoUserRepository.findById(updateUser.userId);
+        assertThat(mongoUser, notNullValue());
+        assertThat(mongoUser.username, equalTo(updateUser.username));
     }
 
     @Test
-    public void testUsersCanBeDeleted(){
+    public void testUsersCanBeDeleted() throws CreateException {
         User user = new User("ABC123", "ABC123");
         userService.createUser(user);
 
@@ -91,7 +110,10 @@ public class UserResourceTest {
                 .statusCode(200);
 
         User foundUser = userRepository.findById(user.userId);
-        Assertions.assertNull(foundUser);
+        assertThat(foundUser, nullValue());
+
+        MongoUser foundMUser = mongoUserRepository.findById(user.userId);
+        assertThat(foundMUser, nullValue());
     }
 
 }
