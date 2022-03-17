@@ -1,24 +1,25 @@
 package uk.co.cstdev.databasemanagement.model;
 
 import io.quarkus.mongodb.panache.common.MongoEntity;
-import org.bson.codecs.pojo.annotations.BsonId;
 
+import java.util.List;
 import java.util.Objects;
 
 @MongoEntity(database="usermanagement", collection="roles")
-public class Role {
+public class Role extends RoleBase {
 
-    @BsonId
-    public String roleId;
-    public String roleName;
+    public String description;
 
     public Role(){
 
     }
 
-    public Role(String roleId, String roleName){
+    public Role(String roleId, String roleName, String description, List<Privilege> privileges, List<String> roles){
         this.roleId = roleId;
         this.roleName = roleName;
+        this.description = description;
+        this.privileges = privileges;
+        this.roles = roles;
     }
 
     @Override
@@ -26,11 +27,11 @@ public class Role {
         if (this == o) return true;
         if (!(o instanceof Role)) return false;
         Role role = (Role) o;
-        return roleId.equals(role.roleId) && roleName.equals(role.roleName);
+        return description.equals(role.description) && super.equals(role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(roleId, roleName);
+        return Objects.hash(description);
     }
 }
