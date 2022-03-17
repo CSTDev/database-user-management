@@ -5,21 +5,17 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.co.cstdev.databasemanagement.exceptions.CreateException;
-import uk.co.cstdev.databasemanagement.model.MongoRole;
 import uk.co.cstdev.databasemanagement.model.MongoUser;
 import uk.co.cstdev.databasemanagement.model.User;
-import uk.co.cstdev.databasemanagement.repository.Mongo;
-import uk.co.cstdev.databasemanagement.repository.RoleRepository;
 import uk.co.cstdev.databasemanagement.repository.UserRepository;
 import uk.co.cstdev.databasemanagement.service.UserService;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
-
-import java.util.List;
+import java.util.Collections;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -61,6 +57,7 @@ public class UserResourceTest {
     public void testUsersCanBeCreated(){
         final String userId = "ABC123";
         User user = new User(userId, userId);
+        user.roles = Collections.singletonList("reader");
 
         given()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -71,6 +68,7 @@ public class UserResourceTest {
 
         User foundUser = userRepository.findById(user.userId);
         Assertions.assertNotNull(foundUser);
+        assertThat(foundUser.roles, hasItem("reader"));
 
         MongoUser mongoUser = mongoUserRepository.findById(user.userId);
         Assertions.assertNotNull(mongoUser);
