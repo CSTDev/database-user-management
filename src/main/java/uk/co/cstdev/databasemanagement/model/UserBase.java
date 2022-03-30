@@ -1,6 +1,7 @@
 package uk.co.cstdev.databasemanagement.model;
 
 import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +20,12 @@ public class UserBase {
     public String userId;
     public String username;
     public List<String> roles;
+    @BsonProperty("pwd")
+    public String password;
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -1,6 +1,7 @@
 package uk.co.cstdev.databasemanagement.service;
 
 import com.mongodb.MongoWriteException;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jboss.logging.Logger;
 import uk.co.cstdev.databasemanagement.exceptions.CreateException;
 import uk.co.cstdev.databasemanagement.exceptions.UpdateException;
@@ -30,6 +31,7 @@ public class DefaultUserService implements UserService{
 
     @Override
     public User createUser(User user) throws CreateException {
+        String password = RandomStringUtils.random(10, true, true);
         try {
             userRepository.persist(user);
         } catch (MongoWriteException e) {
@@ -37,7 +39,7 @@ public class DefaultUserService implements UserService{
         }
 
         try {
-            MongoUser mUser = new MongoUser(user);
+            MongoUser mUser = new MongoUser(user, password);
             mongoUserRepository.persist(mUser);
         } catch (MongoWriteException e){
             if(!userRepository.deleteById(user.userId)){
@@ -45,6 +47,7 @@ public class DefaultUserService implements UserService{
             }
             throw new CreateException("failed to create user in admin database");
         }
+        user.setPassword(password);
         return user;
     }
 
@@ -59,7 +62,7 @@ public class DefaultUserService implements UserService{
         }
 
         try {
-            MongoUser mUser = new MongoUser(user);
+            MongoUser mUser = new MongoUser(user, null);
             mongoUserRepository.update(mUser);
         } catch (MongoWriteException e) {
             LOG.errorv("failed to update user in admin database %s", userId);

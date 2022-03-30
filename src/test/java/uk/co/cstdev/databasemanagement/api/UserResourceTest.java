@@ -59,12 +59,14 @@ public class UserResourceTest {
         User user = new User(userId, userId);
         user.roles = Collections.singletonList("reader");
 
-        given()
+        User responseUser = given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(user)
                 .when().post("/user")
                 .then()
-                .statusCode(201);
+                .statusCode(201)
+                .extract()
+                .as(User.class);
 
         User foundUser = userRepository.findById(user.userId);
         Assertions.assertNotNull(foundUser);
@@ -72,6 +74,10 @@ public class UserResourceTest {
 
         MongoUser mongoUser = mongoUserRepository.findById(user.userId);
         Assertions.assertNotNull(mongoUser);
+        Assertions.assertNotNull(mongoUser.password);
+
+        Assertions.assertNotNull(responseUser);
+        assertThat(responseUser.password, notNullValue());
 
     }
 
