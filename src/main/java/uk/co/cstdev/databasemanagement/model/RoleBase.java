@@ -11,6 +11,7 @@ public class RoleBase {
     public String roleId;
     @BsonProperty("role")
     public String roleName;
+    @BsonProperty("privileges")
     public List<Privilege> privileges;
     public List<String> roles;
 

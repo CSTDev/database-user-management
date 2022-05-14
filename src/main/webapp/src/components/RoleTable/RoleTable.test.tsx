@@ -7,7 +7,7 @@ describe("Role table", () => {
   const roles: Array<Role> = [
     {
       roleId: "test.writer",
-      shortName: "writer",
+      roleName: "writer",
       description:
         "Allows user to perform write operations in the test database",
       privileges: [],
@@ -24,7 +24,7 @@ describe("Role table", () => {
     render(<RoleTable roles={roles} delete={jest.fn()} edit={jest.fn()} />);
 
     roles.forEach((r) => {
-      const shortName = screen.getByText(r.shortName);
+      const shortName = screen.getByText(r.roleName);
       const description = screen.getByText(r.description);
       expect(shortName).toBeInTheDocument();
       expect(description).toBeInTheDocument();

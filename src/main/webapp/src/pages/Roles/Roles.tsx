@@ -94,7 +94,7 @@ const Roles: React.FC = () => {
       >
         <DialogContent>
           <DialogContentText id="delete-confirmation-title">
-            {`Are you sure you want to delete ${currentRole?.shortName}`}
+            {`Are you sure you want to delete ${currentRole?.roleName}`}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

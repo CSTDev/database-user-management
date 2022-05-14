@@ -20,8 +20,14 @@ const users: Array<User> = [
     username: "bob",
     userId: "ABC123",
     roles: ["admin", "reader", "writer", "that", "many"],
+    password: "",
   },
-  { username: "jane", userId: "DEF234", roles: ["role", "another"] },
+  {
+    username: "jane",
+    userId: "DEF234",
+    roles: ["role", "another"],
+    password: "",
+  },
 ];
 jest.mock("../../data/userAPI");
 

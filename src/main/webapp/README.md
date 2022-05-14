@@ -1,3 +1,8 @@
+// TODO
+
+1. When selecting a role action it doesn't show in the bar until you exit
+2. When collection is empty (i.e. user has access to all collections in db) it is stored as undefined, does it matter?
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

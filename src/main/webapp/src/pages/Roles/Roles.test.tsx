@@ -30,7 +30,7 @@ beforeEach(() => {
   });
 
   createRoleMock.mockImplementation(async (role: Role) => {
-    role.roleId = role.shortName.replace(/\s/g, "");
+    role.roleId = role.roleName.replace(/\s/g, "");
     apiRoles.push(role);
     return apiRoles;
   });
@@ -61,7 +61,7 @@ describe("Roles page", () => {
     await waitForElementToBeRemoved(loadingSpinner);
 
     roles.forEach((r) => {
-      const roleName = screen.getByText(r.shortName);
+      const roleName = screen.getByText(r.roleName);
       expect(roleName).toBeInTheDocument();
       const roleDescription = screen.getByText(r.description);
       expect(roleDescription).toBeInTheDocument();
@@ -75,7 +75,7 @@ describe("Roles page", () => {
     });
     await waitForElementToBeRemoved(loadingSpinner);
 
-    const roleName = screen.getByText(roles[0].shortName);
+    const roleName = screen.getByText(roles[0].roleName);
 
     const deleteButtons = screen.getAllByRole("button", { name: /delete/i });
     expect(deleteButtons.length).toBe(roles.length);
@@ -156,31 +156,31 @@ describe("Roles page", () => {
 const roles: Array<Role> = [
   {
     roleId: "test.writer",
-    shortName: "writer",
+    roleName: "writer",
     description: "Allows user to perform write operations in the test database",
     privileges: [],
   },
   {
     roleId: "test.reader",
-    shortName: "reader",
+    roleName: "reader",
     description: "Allows user to perform read operations in the test database",
     privileges: [],
   },
   {
     roleId: "test.admin",
-    shortName: "admin",
+    roleName: "admin",
     description: "Allows user to perform all operations in the test database",
     privileges: [],
   },
   {
     roleId: "test.that",
-    shortName: "that",
+    roleName: "that",
     description: "Allows user to perform that operations in the test database",
     privileges: [],
   },
   {
     roleId: "test.many",
-    shortName: "many",
+    roleName: "many",
     description: "Allows user to perform many operations in the test database",
     privileges: [],
   },

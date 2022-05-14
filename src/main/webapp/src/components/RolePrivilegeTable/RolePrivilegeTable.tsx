@@ -35,6 +35,7 @@ const RolePrivilegeTable: React.FC<RolePrivilegeTableProps> = (
 
   useEffect(() => {
     setPrivileges(props.privileges);
+    console.log("privileges", props.privileges);
   }, [props]);
 
   useEffect(() => {
@@ -98,12 +99,23 @@ const RolePrivilegeTable: React.FC<RolePrivilegeTableProps> = (
   };
 
   const columns: GridColDef[] = [
-    { field: "database", headerName: "Database", width: 150, editable: true },
+    {
+      field: "database",
+      headerName: "Database",
+      width: 150,
+      editable: true,
+      valueGetter: (params) => {
+        return params.row.resource.db;
+      },
+    },
     {
       field: "collection",
       headerName: "Collection",
       width: 150,
       editable: true,
+      valueGetter: (params) => {
+        return params.row.resource.collection;
+      },
     },
     {
       field: "actions",
@@ -132,7 +144,7 @@ const RolePrivilegeTable: React.FC<RolePrivilegeTableProps> = (
 
   const handleAddClick = () => {
     const p = Object.assign([], privileges);
-    p.push({ id: p.length, database: "", collection: "", actions: [] });
+    p.push({ id: p.length, resource: { db: "", collection: "" }, actions: [] });
     setPrivileges(p);
   };
 
@@ -158,8 +170,10 @@ const RolePrivilegeTable: React.FC<RolePrivilegeTableProps> = (
       (newRow.actions.value as Array<string>) ?? [];
     const priv: Privilege = {
       id: i,
-      database: newRow.database.value + "",
-      collection: newRow.collection.value + "",
+      resource: {
+        db: newRow.database.value + "",
+        collection: newRow.collection.value + "",
+      },
       actions: actions,
     };
     p[i] = priv;

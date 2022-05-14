@@ -51,6 +51,7 @@ const CreateRolePopover: React.FC<CreateRolePopoverProps> = (
 
   useEffect(() => {
     const { role } = props;
+    console.log("popover role", role);
     setRole(Object.assign({}, role));
   }, [props]);
 
@@ -93,10 +94,10 @@ const CreateRolePopover: React.FC<CreateRolePopoverProps> = (
             id="rolename"
             label="Role Name"
             onChange={(e) => {
-              setRole({ ...role, shortName: e.target.value });
+              setRole({ ...role, roleName: e.target.value });
             }}
             helperText="Name for the role"
-            value={role.shortName ?? ""}
+            value={role.roleName ?? ""}
             className={classes.roleName}
           />
         </Box>

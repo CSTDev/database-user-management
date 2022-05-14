@@ -2,18 +2,23 @@ export interface User {
   userId: string;
   username: string;
   roles: Array<string>;
+  password?: string;
 }
 
 export interface Role {
   roleId: string;
-  shortName: string;
+  roleName: string;
   description: string;
   privileges: Array<Privilege>;
 }
 
 export interface Privilege {
   id: number;
-  database: string;
-  collection: string;
+  resource: PrivilegeResource;
   actions: Array<string>;
+}
+
+export interface PrivilegeResource {
+  db: string;
+  collection: string;
 }

@@ -77,11 +77,12 @@ const Home: React.FC = () => {
     setDisplayUsers(users);
   }, [users]);
 
-  const handleUserPopoverClose = (isNew: boolean, user?: User) => {
+  const handleUserPopoverClose = async (isNew: boolean, user?: User) => {
     setUserPopoverOpen(false);
     if (user) {
       if (isNew) {
-        createUser(user);
+        const newUser = await createUser(user);
+        alert(newUser.password);
       } else {
         updateUser(user);
         const index = users.findIndex((u) => u.userId === user.userId);
@@ -111,6 +112,7 @@ const Home: React.FC = () => {
 
   const closeDeleteConfirmation = () => {
     setDeleteConfirmOpen(false);
+    setCurrentUser(undefined);
   };
 
   const deleteUser = (userId: string) => {

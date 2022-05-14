@@ -11,4 +11,4 @@ public class MongoRole extends RoleBase {
     public MongoRole(Role role) {
         super(role.roleId, role.roleName, role.privileges, role.roles);
     }
-}
+}//geVyW7uCny

@@ -54,9 +54,7 @@ const CreateUserPopover: React.FC<CreateUserPopoverProps> = (
     }
     const roles: Array<Role> = [];
     user.roles.forEach((ur) => {
-      const role: Role | undefined = props.roles.find(
-        (r) => r.shortName === ur
-      );
+      const role: Role | undefined = props.roles.find((r) => r.roleName === ur);
       if (role) {
         roles.push(role);
       }
@@ -73,10 +71,10 @@ const CreateUserPopover: React.FC<CreateUserPopoverProps> = (
           id="role-input"
           aria-label="user-role"
           options={props.roles ?? []}
-          getOptionLabel={(option) => option.shortName}
+          getOptionLabel={(option) => option.roleName}
           onChange={(e, newValue) => {
             if (newValue !== null) {
-              setUser({ ...user, roles: newValue.map((r) => r.shortName) });
+              setUser({ ...user, roles: newValue.map((r) => r.roleName) });
             }
           }}
           renderInput={(params) => (

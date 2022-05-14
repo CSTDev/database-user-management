@@ -1,5 +1,6 @@
 package uk.co.cstdev.databasemanagement.service;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoWriteException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jboss.logging.Logger;
@@ -17,6 +18,8 @@ import java.util.List;
 public class DefaultUserService implements UserService{
 
     private static final Logger LOG = Logger.getLogger(DefaultUserService.class);
+
+    private static final String ADMIN_DB_PREFIX = "admin.";
 
     @Inject
     UserRepository<User,String> userRepository;
@@ -39,8 +42,10 @@ public class DefaultUserService implements UserService{
         }
 
         try {
-            MongoUser mUser = new MongoUser(user, password);
-            mongoUserRepository.persist(mUser);
+            mongoUserRepository.mongoDatabase().runCommand(new BasicDBObject()
+                    .append("createUser", user.username)
+                    .append("pwd", password)
+                    .append("roles", user.roles));
         } catch (MongoWriteException e){
             if(!userRepository.deleteById(user.userId)){
                 LOG.warnv("failed to roll back user creation, userID: %s", user.userId);
@@ -62,7 +67,8 @@ public class DefaultUserService implements UserService{
         }
 
         try {
-            MongoUser mUser = new MongoUser(user, null);
+            MongoUser originalMongo = mongoUserRepository.findById(ADMIN_DB_PREFIX + user.username);
+            MongoUser mUser = new MongoUser(user, originalMongo.password);
             mongoUserRepository.update(mUser);
         } catch (MongoWriteException e) {
             LOG.errorv("failed to update user in admin database %s", userId);
@@ -74,6 +80,7 @@ public class DefaultUserService implements UserService{
 
     @Override
     public boolean deleteUser(String userId) {
-        return userRepository.deleteById(userId) && mongoUserRepository.deleteById(userId);
+        User user = userRepository.findById(userId);
+        return userRepository.deleteById(userId) && mongoUserRepository.deleteById(ADMIN_DB_PREFIX + user.username);
     }
 }

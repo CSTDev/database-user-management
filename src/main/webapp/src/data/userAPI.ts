@@ -23,7 +23,7 @@ export const createUser = async (user: User) => {
     body: JSON.stringify(user),
   };
   return await fetch(userEndpoint, requestOptions).then((res) => {
-    return users;
+    return res.json();
   });
 };
 

@@ -1,5 +1,6 @@
 package uk.co.cstdev.databasemanagement.service;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoWriteException;
 import org.jboss.logging.Logger;
 import uk.co.cstdev.databasemanagement.exceptions.CreateException;
@@ -11,6 +12,7 @@ import uk.co.cstdev.databasemanagement.repository.RoleRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.List;
 @ApplicationScoped
 public class DefaultRoleService implements RoleService {
@@ -38,8 +40,12 @@ public class DefaultRoleService implements RoleService {
         }
 
         try{
-            MongoRole mRole = new MongoRole(role);
-            mongoRoleRepository.persist(mRole);
+            // TODO  move into repository?
+            mongoRoleRepository.mongoDatabase().runCommand(new BasicDBObject()
+                    .append("createRole", role.roleName)
+                    .append("roles", Collections.emptyList())
+                    .append("privileges", role.privileges))
+                    ;
         }catch (MongoWriteException e) {
             if (!roleRepository.deleteById(role.roleId)){
                 LOG.warnv("failed when rolling back role creation, roleID: %s", role.roleId);
@@ -60,8 +66,11 @@ public class DefaultRoleService implements RoleService {
         }
 
         try {
-            MongoRole mRole = new MongoRole(role);
-            mongoRoleRepository.update(mRole);
+            // TODO  move into repository?
+            mongoRoleRepository.mongoDatabase().runCommand(new BasicDBObject()
+                    .append("updateRole", role.roleName)
+                    .append("roles", Collections.emptyList())
+                    .append("privileges", role.privileges));
         }catch(MongoWriteException e){
             LOG.errorv("failed to update role in admin database %s", roleId);
             roleRepository.update(original);

@@ -1,53 +1,56 @@
 import { Role } from "./models";
-const roles: Array<Role> = [
-  {
-    roleId: "test.writer",
-    shortName: "writer",
-    description: "Allows user to perform write operations in the test database",
-    privileges: [],
-  },
-  {
-    roleId: "test.reader",
-    shortName: "reader",
-    description: "Allows user to perform read operations in the test database",
-    privileges: [],
-  },
-  {
-    roleId: "test.admin",
-    shortName: "admin",
-    description: "Allows user to perform all operations in the test database",
-    privileges: [],
-  },
-  {
-    roleId: "test.that",
-    shortName: "that",
-    description: "Allows user to perform that operations in the test database",
-    privileges: [],
-  },
-  {
-    roleId: "test.many",
-    shortName: "many",
-    description: "Allows user to perform many operations in the test database",
-    privileges: [],
-  },
-];
+import config from "../config";
 
-export const getAllRoles = async (): Promise<Array<Role>> => {
+const roles: Array<Role> = [];
+
+const roleEndpoint = config.API_URL + "/role";
+
+export const getAllRoles = async () => {
+  const response = await fetch(roleEndpoint);
+  const r = await response.json();
+  roles.push(...r);
   return roles;
 };
 
-export const deleteRole = async (roleId: string) => {};
+export const deleteRole = async (roleId: string) => {
+  const requestOptions = {
+    method: "DELETE",
+  };
+
+  return await fetch(roleEndpoint + "/" + roleId, requestOptions).then(
+    (res) => {
+      return roles.filter((r) => r.roleId !== roleId);
+    }
+  );
+};
 
 export const createRole = async (role: Role) => {
-  role.roleId = role.shortName.replace(/\s/g, "");
+  role.roleId = role.roleName.replace(/\s/g, "");
   roles.push(role);
-  return roles;
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(role),
+  };
+
+  return await fetch(roleEndpoint, requestOptions).then(async (res) => {
+    return roles;
+  });
 };
 
 export const updateRole = async (role: Role) => {
   const index = roles.findIndex((r) => r.roleId === role.roleId);
   roles[index] = role;
-  return roles;
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(role),
+  };
+  return await fetch(roleEndpoint + "/" + role.roleId, requestOptions).then(
+    (res) => {
+      return roles;
+    }
+  );
 };
 
 export const getAvailableActions = () => {

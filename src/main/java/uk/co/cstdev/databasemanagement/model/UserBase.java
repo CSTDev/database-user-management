@@ -12,12 +12,13 @@ public class UserBase {
     }
 
     public UserBase(String userId, String username) {
-        this.userId = userId;
+        this.userId = "admin."+ userId;
         this.username = username;
     }
 
     @BsonId
     public String userId;
+    @BsonProperty("user")
     public String username;
     public List<String> roles;
     @BsonProperty("pwd")
