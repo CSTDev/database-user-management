@@ -1,57 +1,64 @@
 # database-user-management Project
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Provides a UI to manage users within Mongo
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+## Structure
 
-## Running the application in dev mode
+The project is made up of an API written using Java and the Quarkus framework and a UI that uses Typescript with React.
+
+The service can be found under `src/main/java`
+The UI is under `src/main/webapp`
+
+## Development
+
+### API
+
+The API requires a mongo database it can connect to, if you don't specify anything in the `application.properties` it will attempt to start a container using [Quarkus dev services](https://quarkus.io/guides/dev-services). You can customise the container it tries to run using the `quarkus.mongodb.devservices.image-name` property.
+Alternatively if you have a different mongo running, either in a container or on your machine, update the `application.properties` file to specify the connection string:
+
+```
+# configure the mongoDB client for a single instance on localhost
+quarkus.mongodb.connection-string = mongodb://localhost:27017
+```
 
 You can run your application in dev mode that enables live coding using:
+
 ```shell script
 ./mvnw compile quarkus:dev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+> **_NOTE:_** Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
 
-## Packaging and running the application
+### UI
 
-The application can be packaged using:
+Ideally you need the API running to make developing the UI easier (TODO: make use of MSW to mock in future). Either run as above or run the API docker image. In `package.json` there is a `proxy` setting that tells the UI where to look for the API.
+
+The UI requires the node dependecies to be installed, from the webapp directory (`src/main/webapp`) run:
+
 ```shell script
-./mvnw package
-```
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-If you want to build an _über-jar_, execute the following command:
-```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
+yarn install
 ```
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+You can then run the UI in dev mode that also enables live coding by running the start script
 
-## Creating a native executable
-
-You can create a native executable using: 
 ```shell script
-./mvnw package -Pnative
+yarn run start
 ```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
+## Packaging
+
+The entire application can be packaged into a docker image using:
+
 ```shell script
-./mvnw package -Pnative -Dquarkus.native.container-build=true
+./mvnw clean package -Dquarkus.container-image.build=true
 ```
 
-You can then execute your native executable with: `./target/database-user-management-1.0.0-SNAPSHOT-runner`
+It makes use of [Jib](https://github.com/GoogleContainerTools/jib) to create the image, the base image is set in `application.properties`
 
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.html.
+The image is then runnable using:
 
-## Related Guides
+```shell script
+docker run -p 8080:8080 database-management-ui:0
+```
 
-
-## Provided Code
-
-### RESTEasy Reactive
-
-Easily start your Reactive RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+Both the UI and the API are available on the same port
